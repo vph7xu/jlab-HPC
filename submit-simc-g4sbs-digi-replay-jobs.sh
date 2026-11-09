@@ -14,7 +14,7 @@
 # --------------------------------------------------------------------------------------- #
 # 1. This script takes 5 arguments:                                                       #
 #    a. SIMC infile w/o file extention. Must be located at $SIMC/infiles directory.       #
-#    b. SBS configuration (Valid options: GMN4,GMN7,GMN11,GMN14,GMN8,GMN9,GEN2,GEN3,GEN4) #
+#    b. SBS configuration (Valid options: GMN4,GMN7,GMN11,GMN14,GMN8,GMN9,GEN1,GEN2,GEN3,GEN4) #
 #    c. First job id.                                                                     #
 #    d. Total no. of jobs to submit.                                                      #
 #    e. Flag to force all jobs to run on ifarm. (1=>YES) Very useful for debugging.       #
@@ -42,21 +42,22 @@ nevents=$3      # No. of SIMC (and g4sbs) events to generate
 fjobid=$4       # first job id
 njobs=$5        # total no. of jobs to submit 
 run_on_ifarm=$6 # 1=>Yes (If true, runs all jobs on ifarm)
+genconfig=$7
 # ----/\---- Above variables are taken as arguments to this script ---/\---- # 
 # Workflow name
-workflowname=
+workflowname=simc_test_gen4_n_noNRad_1106
 # Specify a directory on volatile to store simc, g4sbs, sbsdig, & replayed outfiles.
 # Working on a single directory is convenient & safe for the above mentioned
 # four processes to run coherently without any error.
-outdirpath=
+outdirpath=/volatile/halla/sbs/vimukthi/simc_g4sbs/He3een_GEN4_PSfix_noNRad_1106/
 # -------------------------------------------------------------------------- #
 
 # ------ Variables to allocate time and memory for each type of jobs  ------ #
 # -------------------------------------------------------------------------- #
 # SIMC jobs
-SIMCJOBram='100MB'
+SIMCJOBram='200MB'
 SIMCJOBdisk='250MB'
-SIMCJOBtime='6h'
+SIMCJOBtime='24h'
 # g4sbs jobs
 G4SBSJOBram='1200MB'
 G4SBSJOBdisk='1GB'
@@ -66,7 +67,7 @@ SBSDIGJOBram='1200MB'
 SBSDIGJOBdisk='100MB'
 SBSDIGJOBtime='6h'
 # replay jobs
-REPLAYJOBram='1200MB'
+REPLAYJOBram='3200MB'
 REPLAYJOBdisk='1GB'
 REPLAYJOBtime='6h'
 # -------------------------------------------------------------------------- #
@@ -89,15 +90,16 @@ elif [[ ! -d $SBS_REPLAY ]]; then
 fi
 
 # Sanity check 1: Validating the number of arguments provided
-if [[ "$#" -ne 6 ]]; then
+if [[ "$#" -ne 7 ]]; then
     echo -e " \n --!!--\n ERROR! Illegal number of arguments!! \n ------"
     echo -e " This script takes 6 arguments: <infile> <sbsconfig> <fjobid> <njobs> <run_on_ifarm>"
     echo -e "  1. <infile>       : SIMC infile w/o file extention. Must be located at SIMC/infiles directory."
-    echo -e "  2. <sbsconfig>    : SBS configuration (Valid options: GMN4,GMN7,GMN11,GMN14,GMN8,GMN9,GEN2,GEN3,GEN4)."  
+    echo -e "  2. <sbsconfig>    : SBS configuration (Valid options: GMN4,GMN7,GMN11,GMN14,GMN8,GMN9,GEN1,GEN2,GEN3,GEN4)."  
     echo -e "  3. <nevents>      : No. of SIMC (and g4sbs) events to generate per job."  
     echo -e "  4. <fjobid>       : First job id."  
     echo -e "  5. <njobs>        : Total no. of jobs to submit."
     echo -e "  6. <run_on_ifarm> : 1=>Yes (If true, runs all jobs on ifarm)"
+    echo -e "  7. <genconfig>    : for GEN (GENX)"
     echo -e " ------"
     echo -e ' ** Make sure "workflowname" & "outdirpath" variables are set properly in the script.'
     echo -e ' ** Read the "Notes and Instructions" block at the top of script for more information.\n'
@@ -196,10 +198,10 @@ if [[ ($sbsconfig == GMN4) || ($sbsconfig == GMN7) ]]; then
     gemconfig=12
 elif [[ $sbsconfig == GMN11 ]]; then
     gemconfig=10
-elif [[ ($sbsconfig == GMN14) || ($sbsconfig == GMN8) || ($sbsconfig == GMN9) || ($sbsconfig == GEN2) || ($sbsconfig == GEN3) || ($sbsconfig == GEN4) ]]; then
+elif [[ ($sbsconfig == GMN14) || ($sbsconfig == GMN8) || ($sbsconfig == GMN9) || ($sbsconfig == GEN1) || ($sbsconfig == GEN2) || ($sbsconfig == GEN3) || ($sbsconfig == GEN4) ]]; then
     gemconfig=8
 else
-    echo -e "Enter valid SBS config! Valid options: GMN4,GMN7,GMN11,GMN14,GMN8,GMN9,GEN2,GEN3,GEN4"
+    echo -e "Enter valid SBS config! Valid options: GMN4,GMN7,GMN11,GMN14,GMN8,GMN9,GEN1,GEN2,GEN3,GEN4"
     exit;
 fi
 
@@ -237,7 +239,7 @@ do
     sbsdigjobname=$infile'_digi_job_'$i
     sbsdiginfile=$outdirpath'/'$outfilebase'.root'
 
-    sbsdigscript=$SCRIPT_DIR'/run-sbsdig.sh'' '$txtfile' '$sbsdiginfile' '$gemconfig' '$run_on_ifarm' '$G4SBS' '$LIBSBSDIG' '$ANAVER' '$useJLABENV' '$JLABENV
+    sbsdigscript=$SCRIPT_DIR'/run-sbsdig.sh'' '$txtfile' '$sbsdiginfile' '$gemconfig' '$run_on_ifarm' '$G4SBS' '$LIBSBSDIG' '$ANAVER' '$useJLABENV' '$JLABENV' '$genconfig
     
     if [[ $run_on_ifarm -ne 1 ]]; then
 	swif2 add-job -workflow $workflowname -antecedent $g4sbsjobname -partition production -name $sbsdigjobname -cores 1 -disk $SBSDIGJOBdisk -ram $SBSDIGJOBram -time $SBSDIGJOBtime $sbsdigscript

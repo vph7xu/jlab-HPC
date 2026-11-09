@@ -22,11 +22,15 @@ libsbsdigenv=$6
 ANAVER=$7      # Analyzer version
 useJLABENV=$8  # Use 12gev_env instead of modulefiles?
 JLABENV=$9     # /site/12gev_phys/softenv.sh version
+sbsconfig=${10}  #GEN2,GEN3,GEN4,GEN4b
 
 # paths to necessary libraries (ONLY User specific part) ---- #
-export G4SBS=$g4sbsenv
-export LIBSBSDIG=$libsbsdigenv
+export G4SBS=/work/halla/sbs/vimukthi/g4sbs/install
+export LIBSBSDIG=/work/halla/sbs/vimukthi/libsbsdig/install
 # ----------------------------------------------------------- #
+
+echo $G4SBS
+echo $LIBSBSDIG
 
 ifarmworkdir=${PWD}
 if [[ $isifarm == 1 ]]; then
@@ -44,6 +48,7 @@ fi
 if [[ (! -d /group/halla/modulefiles) || ($useJLABENV -eq 1) ]]; then 
     source /site/12gev_phys/softenv.sh $JLABENV
 else 
+    module purge
     module use /group/halla/modulefiles
     module load analyzer/$ANAVER
     module list
@@ -55,7 +60,28 @@ source $LIBSBSDIG/bin/sbsdigenv.sh
 
 # Choosing the right DB file depending on GEM config
 if [[ $gemconfig -eq 8 ]]; then
-    dbfile=$LIBSBSDIG/db/db_gmn_conf_8gemmodules.dat
+    if [[ $sbsconfig == "GEN2" ]]; then
+	dbfile=$LIBSBSDIG/db/db_gen_conf_8gemmodules_GEN2.dat
+	echo -e "GEN2 digitization"
+        echo -e $sbsconfig	
+    elif [[ $sbsconfig == "GEN3" ]]; then 
+	dbfile=$LIBSBSDIG/db/db_gen_conf_8gemmodules_GEN3.dat
+	echo -e "GEN3 digitization"
+        echo -e $sbsconfig
+    elif [[ $sbsconfig == "GEN4" ]]; then
+        dbfile=$LIBSBSDIG/db/db_gen_conf_8gemmodules_GEN4.dat
+	echo -e "GEN4 digitization"
+        echo -e $sbsconfig
+    elif [[ $sbsconfig == "GEN4b" ]]; then
+        dbfile=$LIBSBSDIG/db/db_gen_conf_8gemmodules_GEN4b.dat
+	echo -e "GEN4b digitization"
+        echo -e $sbsconfig
+    else	    
+    	dbfile=$LIBSBSDIG/db/db_gmn_conf_8gemmodules.dat
+	echo -e "Generic digitization"
+	echo -e $sbsconfig
+    fi
+
 elif [[ $gemconfig -eq 10 ]]; then
     dbfile=$LIBSBSDIG/db/db_gmn_conf_10gemmodules.dat
 elif [[ $gemconfig -eq 12 ]]; then

@@ -26,7 +26,7 @@ useJLABENV=${10}  # Use 12gev_env instead of modulefiles?
 JLABENV=${11}     # /site/12gev_phys/softenv.sh version
 
 # paths to necessary libraries (ONLY User specific part) ---- #
-export G4SBS=$g4sbsenv
+export G4SBS=/work/halla/sbs/vimukthi/g4sbs/install #$g4sbsenv
 # ----------------------------------------------------------- #
 
 ifarmworkdir=${PWD}
@@ -45,8 +45,11 @@ fi
 if [[ (! -d /group/halla/modulefiles) || ($useJLABENV -eq 1) ]]; then 
     source /site/12gev_phys/softenv.sh $JLABENV
 else 
+    module purge
     module use /group/halla/modulefiles
-    module load analyzer/$ANAVER
+    #module load analyzer/$ANAVER
+    #module load Geant4/11.2.1
+    #module load root/6.26.10 
     module list
 fi
 
@@ -59,7 +62,7 @@ echo '/g4sbs/filename '$outfilebase'.root' >>$postscript
 echo '/g4sbs/run '$nevents >>$postscript
 #cat $postscript
 
-g4sbs --pre=$preinit'.mac' --post=$postscript 
+g4sbs $preinit'.mac' $postscript 
 
 # idiot proofing
 if [[ ! -d $outdirpath ]]; then

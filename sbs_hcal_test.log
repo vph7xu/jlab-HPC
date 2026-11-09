@@ -1,0 +1,28 @@
+==== 2026-11-04 22:21:52 -0500
+Started analysis, run 1
+Reading from 
+End of file.
+==== 2026-11-04 22:22:00 -0500
+Summary for run 1
+Counter summary:
+192  events read
+192  events decoded
+189  physics events
+  3  other event types
+189  physics events analyzed
+192  events accepted
+
+Timing summary:
+Init             : Real Time =   6.43 seconds Cpu Time =   6.27 seconds
+Begin            : Real Time =   0.07 seconds Cpu Time =   0.06 seconds
+RawDecode        : Real Time =   0.09 seconds Cpu Time =   0.11 seconds
+Decode           : Real Time =   0.04 seconds Cpu Time =   0.04 seconds
+CoarseTracking   : Real Time =   0.04 seconds Cpu Time =   0.03 seconds
+CoarseReconstruct: Real Time =   0.01 seconds Cpu Time =   0.01 seconds
+Tracking         : Real Time =   0.06 seconds Cpu Time =   0.05 seconds
+Reconstruct      : Real Time =   0.00 seconds Cpu Time =   0.00 seconds
+Physics          : Real Time =   0.00 seconds Cpu Time =   0.00 seconds
+End              : Real Time =   0.26 seconds Cpu Time =   0.23 seconds
+Output           : Real Time =   1.09 seconds Cpu Time =   1.06 seconds
+Cuts             : Real Time =   0.00 seconds Cpu Time =   0.00 seconds
+Total            : Real Time =   8.10 seconds Cpu Time =   7.89 seconds

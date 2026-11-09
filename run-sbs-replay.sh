@@ -55,7 +55,7 @@ if [[ (! -d /group/halla/modulefiles) || ($useJLABENV -eq 1) ]]; then
     source $ANALYZER/bin/setup.sh
 else 
     module use /group/halla/modulefiles
-    module load analyzer/$ANAVER
+    module load analyzer/1.7.12
     module list
 fi
 

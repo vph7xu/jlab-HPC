@@ -24,7 +24,7 @@ fjobid=$3       # first job id
 njobs=$4        # total no. of jobs to submit 
 run_on_ifarm=$5 # 1=>Yes (If true, runs all jobs on ifarm)
 workflowname=
-outdirpath='/w/halla-scshelf2102/sbs/pdbforce/jlab-HPC/simcout'
+outdirpath='/volatile/halla/sbs/vimukthi/simc/'
 # -------------------------------------------------------------------------- #
 
 # ------ Variables to allocate time and memory for each type of jobs  ------ #

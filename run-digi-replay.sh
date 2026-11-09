@@ -27,9 +27,13 @@ JLABENV=${11}    # /site/12gev_phys/softenv.sh version
 
 # paths to necessary libraries (ONLY User specific part) ---- #
 export ANALYZER=$analyzerenv
-export SBSOFFLINE=$sbsofflineenv
-export SBS_REPLAY=$sbsreplayenv
+export SBSOFFLINE=/work/halla/sbs/vimukthi/sbsoffline/install
+export SBS_REPLAY=/work/halla/sbs/vimukthi/sbsoffline/SBS-replay
 # ----------------------------------------------------------- #
+
+echo $ANALYZER
+echo $SBSOFFLINE
+echo $SBS_REPLAY
 
 ifarmworkdir=${PWD}
 if [[ $run_on_ifarm == 1 ]]; then
@@ -50,7 +54,8 @@ fi
 if [[ (! -d /group/halla/modulefiles) || ($useJLABENV -eq 1) ]]; then 
     source /site/12gev_phys/softenv.sh $JLABENV
     source $ANALYZER/bin/setup.sh
-else 
+else
+    module purge	
     module use /group/halla/modulefiles
     module load analyzer/$ANAVER
     module list
@@ -67,18 +72,19 @@ export DATA_DIR=$datadir
 # handling any existing .rootrc file in the work directory
 # mainly necessary while running the jobs on ifarm
 if [[ -f .rootrc ]]; then
+    echo "moving .rootrc"
     mv .rootrc .rootrc_temp
 fi
 cp $SBS/run_replay_here/.rootrc $SWIF_JOB_WORK_DIR
 
 if [ $experiment == 'GMN' ] #GMN replay
 then
-    analyzer -b -q 'replay_gmn_mc.C+("'$inputfile'",'$config','$maxevents')'    
+    analyzer -b 'replay_gmn_mc.C+("'$inputfile'",'$config','$maxevents')'    
 fi
 
 if [ $experiment == 'GEN' ] #GEN replay
 then
-    analyzer -b -q 'replay_gen_mc.C+("'$inputfile'",'$config','$maxevents')'    
+    analyzer -b 'replay_gen_mc.C+("'$inputfile'",'$config','$maxevents')'    
 fi
 
 
